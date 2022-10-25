@@ -1,0 +1,132 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@TeleOp(name = "_2023TeleOp (Blocks to Java)")
+@Disabled
+public class _2023TeleOp extends LinearOpMode {
+
+  private DcMotor ArmMotor;
+  private DcMotor CarouselMotor;
+  private Servo clawservo2;
+  private Servo clawServo;
+  private DcMotor backLeft;
+  private DcMotor frontRight;
+  private DcMotor frontLeft;
+  private DcMotor backRight;
+
+  /**
+   * This function is executed when this Op Mode is selected from the Driver Station.
+   */
+  @Override
+  public void runOpMode() {
+    ArmMotor = hardwareMap.get(DcMotor.class, "ArmMotor");
+    CarouselMotor = hardwareMap.get(DcMotor.class, "CarouselMotor");
+    clawservo2 = hardwareMap.get(Servo.class, "clawservo2");
+    clawServo = hardwareMap.get(Servo.class, "clawServo");
+    backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+    frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+    frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+    backRight = hardwareMap.get(DcMotor.class, "backRight");
+
+    // Reverse one of the drive motors.
+    ArmMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    CarouselMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+    clawservo2.setDirection(Servo.Direction.FORWARD);
+    clawServo.setDirection(Servo.Direction.REVERSE);
+    waitForStart();
+    if (opModeIsActive()) {
+      // Put run blocks here.
+      while (opModeIsActive()) {
+        ArmMotor.setPower(0.15);
+        Set_Direction_Normal();
+        // Put loop blocks here.
+        ArmMotor.setPower(-(gamepad2.right_stick_y / 1.5));
+        if (gamepad2.b) {
+          Grab_Function(4, 1500);
+        }
+        if (gamepad2.x) {
+          Grab_Function(-3, 1500);
+        }
+        if (gamepad2.a) {
+          CarouselMotor.setPower(0.5);
+        }
+        if (gamepad2.y) {
+          CarouselMotor.setPower(0);
+        }
+        if (gamepad1.dpad_left) {
+          Shift_Left();
+        }
+        telemetry.addData("Left Pow", backLeft.getPower());
+        telemetry.addData("Right Pow", frontRight.getPower());
+        telemetry.update();
+      }
+    }
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Set_Direction_Normal() {
+    frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Shift_Left() {
+    Set_Direction_Left();
+    Move_Left_Power();
+    sleep(2000);
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Move_Left_Power() {
+    // The Y axis of a joystick ranges from -1 in its topmost position
+    // to +1 in its bottommost position. We negate this value so that
+    // the topmost position corresponds to maximum forward power.
+    backLeft.setPower(1);
+    frontRight.setPower(1);
+    backRight.setPower(1);
+    frontLeft.setPower(1);
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Set_Direction_Left() {
+    frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Grab_Function(int Position2, int time2) {
+    Grab_Position(Position2);
+    sleep(time2);
+  }
+
+  /**
+   * Describe this function...
+   */
+  private void Grab_Position(int Position2) {
+    clawServo.setDirection(Servo.Direction.REVERSE);
+    clawservo2.setDirection(Servo.Direction.FORWARD);
+    clawservo2.setPosition(Position2);
+    // Servo Code
+    clawServo.setPosition(Position2);
+  }
+}
